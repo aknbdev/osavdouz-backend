@@ -29,16 +29,7 @@ import java.util.List;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-
-    private final UserDetailsServiceImpl userDetailsService;
-    private final PasswordEncoder passwordEncoder;
-
-    public SecurityConfig(UserDetailsServiceImpl userDetailsService, PasswordEncoder passwordEncoder) {
-        this.userDetailsService = userDetailsService;
-        this.passwordEncoder = passwordEncoder;
-    }
-
-    private String[] WHITE_URLS = new String[]{
+    private final String[] WHITE_URLS = new String[]{
             "/api/v1/auth/**"
     };
 
@@ -46,12 +37,12 @@ public class SecurityConfig {
     public AuthenticationManager manager(UserDetailsServiceImpl userDetailsService) {
         var authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(userDetailsService);
-        authProvider.setPasswordEncoder(passwordEncoder);
+        authProvider.setPasswordEncoder(this.passwordEncoder());
         return new ProviderManager(authProvider);
     }
 
     @Bean
-    public SecurityFilterChain  filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         return http
                 .csrf(AbstractHttpConfigurer::disable)
@@ -66,7 +57,7 @@ public class SecurityConfig {
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint())
                         .accessDeniedHandler(new BearerTokenAccessDeniedHandler()))
-                .addFilter()
+//                .addFilter()
                 .build();
     }
 
