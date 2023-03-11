@@ -1,0 +1,18 @@
+
+server:
+  port: 8081
+
+rsa:
+  public-key: classpath:certs/public.pem
+  private-key: classpath:certs/private.pem
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/osavdouz_db
+    username: osavdouz_user
+    password: rootan
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
