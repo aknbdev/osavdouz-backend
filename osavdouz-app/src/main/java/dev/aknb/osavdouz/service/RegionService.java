@@ -78,7 +78,6 @@ public class RegionService {
         regionDto.setName(region.getName());
         regionDto.setCountryId(region.getCountryId());
         regionDto.setCities(region.getCities());
-        countryService.updateCountryToDto(region.getCountry(), regionDto.getCountryDto());
     }
 
 
