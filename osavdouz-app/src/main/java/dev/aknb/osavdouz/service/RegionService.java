@@ -63,9 +63,9 @@ public class RegionService {
 
     public void deleteRegion(Long id) {
         if (regionRepository.existsById(id)) {
-//            throw new null;
+            regionRepository.deleteById(id);
         }
-        regionRepository.deleteById(id);
+//            throw new null;
     }
 
 
