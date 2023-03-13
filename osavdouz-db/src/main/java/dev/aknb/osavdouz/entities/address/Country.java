@@ -15,7 +15,7 @@ import java.util.Set;
 @Entity
 @Table(name = "countries")
 @Where(clause = "deleted = false")
-@SQLDelete(sql = "UPDATE countries SET deleted = false WHERE id = ?", check = ResultCheckStyle.COUNT)
+@SQLDelete(sql = "UPDATE countries SET deleted = TRUE WHERE id = ?", check = ResultCheckStyle.COUNT)
 public class Country extends BaseEntity {
 
     @Column(name = "name", length = 100, nullable = false)
