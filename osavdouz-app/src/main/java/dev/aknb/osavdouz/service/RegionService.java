@@ -63,9 +63,9 @@ public class RegionService {
 
     public void deleteRegion(Long id) {
         if (regionRepository.existsById(id)) {
-//            throw new null;
+            regionRepository.deleteById(id);
         }
-        regionRepository.deleteById(id);
+//            throw new null;
     }
 
 
@@ -78,7 +78,6 @@ public class RegionService {
         regionDto.setName(region.getName());
         regionDto.setCountryId(region.getCountryId());
         regionDto.setCities(region.getCities());
-        countryService.updateCountryToDto(region.getCountry(), regionDto.getCountryDto());
     }
 
 
