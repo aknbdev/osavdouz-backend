@@ -1,4 +1,4 @@
-package dev.aknb.osavdouz.controller;
+package dev.aknb.osavdouz.controllers;
 
 
 import dev.aknb.osavdouz.constants.ApiConstants;

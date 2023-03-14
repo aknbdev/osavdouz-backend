@@ -1,9 +1,7 @@
-package dev.aknb.osavdouz.controller;
+package dev.aknb.osavdouz.controllers;
 
 import dev.aknb.osavdouz.constants.ApiConstants;
-import dev.aknb.osavdouz.dto.CountryDto;
 import dev.aknb.osavdouz.dto.RegionDto;
-import dev.aknb.osavdouz.entities.address.Country;
 import dev.aknb.osavdouz.entities.address.Region;
 import dev.aknb.osavdouz.service.RegionService;
 import jakarta.validation.Valid;
