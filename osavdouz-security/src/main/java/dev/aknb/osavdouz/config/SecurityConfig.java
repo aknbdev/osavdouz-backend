@@ -29,8 +29,11 @@ import java.util.List;
 @EnableMethodSecurity
 public class SecurityConfig {
 
+
     private final String[] WHITE_URLS = new String[]{
-            "/api/v1/auth/**"
+            "/api/v1/auth/**",
+            "/api/v1/country/**",
+            "/api/v1/region/**"
     };
 
     @Bean

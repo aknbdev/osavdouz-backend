@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 @Setter
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-@JsonSubTypes.Type(name = "jsonb", value = JsonBinaryType.class)
+//@JsonSubTypes.Type(name = "jsonb", value = JsonBinaryType.class)
 public abstract class BaseEntity implements Serializable {
 
     @Id
