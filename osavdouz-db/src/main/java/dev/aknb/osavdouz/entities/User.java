@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.*;
 
+import java.time.Clock;
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,16 +22,16 @@ import java.util.Set;
 public class User extends BaseEntity {
 
     @Column(name = "first_name", length = 50)
-    private String firstName;
+    private String firstname;
 
     @Column(name = "last_name", length = 50)
-    private String lastName;
+    private String lastname;
 
     @Column(name = "email")
     private String email;
 
     @Column(name = "user_name")
-    private String userName;
+    private String username;
 
     @Column(name = "password", length = 64)
     private String password;
@@ -39,6 +41,9 @@ public class User extends BaseEntity {
 
     @Column(name = "verified")
     private Boolean verified = Boolean.FALSE;
+
+    @Column(name = "password_changed_date")
+    private Instant passwordChangedDate = Instant.now(Clock.systemUTC());
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(

@@ -1,4 +1,4 @@
-package dev.aknb.osavdouz.client.model;
+package dev.aknb.osavdouz.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;

@@ -1,7 +1,7 @@
 package dev.aknb.osavdouz.exceptions;
 
-import dev.aknb.osavdouz.client.model.ErrorData;
-import dev.aknb.osavdouz.client.model.Response;
+import dev.aknb.osavdouz.response.ErrorData;
+import dev.aknb.osavdouz.response.Response;
 import dev.aknb.osavdouz.resolver.MessageResolver;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;

@@ -1,107 +1,107 @@
 package dev.aknb.osavdouz.config;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.aknb.osavdouz.models.SecurityUser;
+import dev.aknb.osavdouz.resolver.MessageResolver;
+import dev.aknb.osavdouz.response.Response;
+import dev.aknb.osavdouz.service.TokenService;
+import dev.aknb.osavdouz.service.UserDetailsServiceImpl;
+import dev.aknb.osavdouz.utils.ObjectUtils;
+import io.micrometer.common.util.StringUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.core.OAuth2AccessToken.TokenType;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-import org.springframework.util.StringUtils;
 
 import java.io.IOException;
+import java.util.Optional;
+
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 public class CustomAuthenticationFilter extends BasicAuthenticationFilter {
-    public CustomAuthenticationFilter(AuthenticationManager authenticationManager) {
+
+    private final UserDetailsServiceImpl userDetailsService;
+    private final MessageResolver messageResolver;
+    private final TokenService tokenService;
+
+    public CustomAuthenticationFilter(AuthenticationManager authenticationManager, UserDetailsServiceImpl userDetailsService, MessageResolver messageResolver, TokenService tokenService) {
         super(authenticationManager);
+        this.userDetailsService = userDetailsService;
+        this.messageResolver = messageResolver;
+        this.tokenService = tokenService;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
 
         try {
+            String token = getTokenOrElseNull(request.getHeader(HttpHeaders.AUTHORIZATION));
 
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
-        super.doFilterInternal(request, response, chain);
-    }
-
-    public Authentication convertBearerHeaderToToken(HttpServletRequest request, HttpServletResponse response) {
-
-        String header = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (header == null) {
-            return null;
-        }
-        if (!StringUtils.startsWithIgnoreCase(header, TokenType.BEARER.getValue())) {
-            return null;
-        }
-        if (header.equalsIgnoreCase(TokenType.BEARER.getValue())) {
-
-            return null;
-        }
-        return null;
-    }
-
-    public String convertToJson(Object object) throws JsonProcessingException {
-
-        if (object == null) {
-            return null;
-        }
-        return new ObjectMapper()
-                .writeValueAsString(object);
-    }
-}
-
-
-/*
-
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-        try {
-            UsernamePasswordAuthenticationToken authRequest = this.authenticationConverter.convert(request);
-            if (authRequest == null) {
-                this.logger.trace("Did not process authentication request since failed to find username and password in Basic Authorization header");
-                chain.doFilter(request, response);
+            if (token == null) {
+                setErrorDataToResponse(response, "BAD_CREDENTIALS");
                 return;
             }
 
-            String username = authRequest.getName();
-            this.logger.trace(LogMessage.format("Found username '%s' in Basic Authorization header", username));
-            if (this.authenticationIsRequired(username)) {
-                Authentication authResult = this.authenticationManager.authenticate(authRequest);
-                SecurityContext context = this.securityContextHolderStrategy.createEmptyContext();
-                context.setAuthentication(authResult);
-                this.securityContextHolderStrategy.setContext(context);
-                if (this.logger.isDebugEnabled()) {
-                    this.logger.debug(LogMessage.format("Set SecurityContextHolder to %s", authResult));
+            Optional<Authentication> auth = getAuthenticationOrElseNull(token);
+
+            if (auth.isPresent()) {
+                UserDetails userDetails = userDetailsService.loadUserByUsername(
+                        ((User) auth.get().getPrincipal()).getUsername());
+
+                if (userDetails == null ||
+                    !tokenService.isIssuedAtAfter(token,
+                            ((SecurityUser) userDetails).getPasswordChangedDate())) {
+
+                    setErrorDataToResponse(response, "BAD_CREDENTIALS");
+                    return;
                 }
-
-                this.rememberMeServices.loginSuccess(request, response, authResult);
-                this.securityContextRepository.saveContext(context, request, response);
-                this.onSuccessfulAuthentication(request, response, authResult);
-            }
-        } catch (AuthenticationException var8) {
-            this.securityContextHolderStrategy.clearContext();
-            this.logger.debug("Failed to process authentication request", var8);
-            this.rememberMeServices.loginFail(request, response);
-            this.onUnsuccessfulAuthentication(request, response, var8);
-            if (this.ignoreFailure) {
+                SecurityContextHolder.getContext().setAuthentication(
+                        new UsernamePasswordAuthenticationToken(userDetails, auth.get().getCredentials(), auth.get().getAuthorities()));
                 chain.doFilter(request, response);
-            } else {
-                this.authenticationEntryPoint.commence(request, response, var8);
             }
-
-            return;
+            SecurityContextHolder.getContext().setAuthentication(null);
+            chain.doFilter(request, response);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        chain.doFilter(request, response);
     }
 
-*/
+    private Optional<Authentication> getAuthenticationOrElseNull(String token) {
+
+        if (StringUtils.isNotBlank(token) && tokenService.validateToken(token)) {
+            return tokenService.getAuthentication(token);
+        }
+        return Optional.empty();
+    }
+
+    public void setErrorDataToResponse(HttpServletResponse response, String code) throws IOException {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType(APPLICATION_JSON_VALUE);
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write(
+                ObjectUtils.convertToJson(
+                        Response.error(messageResolver.getMessage(code), code)));
+    }
+
+    public Boolean hasBearerToken(String bearerToken) {
+
+        return bearerToken != null &&
+               bearerToken.startsWith(TokenService.BEARER_TOKEN) &&
+               !bearerToken.equalsIgnoreCase(TokenService.BEARER_TOKEN);
+    }
+
+    public String getTokenOrElseNull(String bearerToken) {
+
+        if (hasBearerToken(bearerToken)) {
+            return bearerToken.replace("Bearer ", "");
+        }
+        return null;
+    }
+}
