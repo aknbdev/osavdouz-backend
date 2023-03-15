@@ -1,8 +1,9 @@
-package dev.aknb.osavdouz.exceptions;
+package dev.aknb.osavdouz.controllers;
 
-import dev.aknb.osavdouz.response.ErrorData;
-import dev.aknb.osavdouz.response.Response;
-import dev.aknb.osavdouz.resolver.MessageResolver;
+import dev.aknb.osavdouz.models.ErrorData;
+import dev.aknb.osavdouz.models.Response;
+import dev.aknb.osavdouz.models.RestException;
+import dev.aknb.osavdouz.services.MessageResolver;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -20,10 +21,10 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @RestControllerAdvice
-public class ExceptionHelper extends ResponseEntityExceptionHandler {
+public class ExceptionController extends ResponseEntityExceptionHandler {
     private final MessageResolver messageResolver;
 
-    public ExceptionHelper(MessageResolver messageResolver) {
+    public ExceptionController(MessageResolver messageResolver) {
         this.messageResolver = messageResolver;
     }
 

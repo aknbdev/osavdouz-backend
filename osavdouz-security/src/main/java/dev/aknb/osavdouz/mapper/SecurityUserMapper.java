@@ -21,8 +21,8 @@ public class SecurityUserMapper {
         SecurityUser securityUser = new SecurityUser();
 
         securityUser.setId(user.getId());
-        securityUser.setFirstname(user.getFirstname());
-        securityUser.setLastname(user.getLastname());
+        securityUser.setFirstname(user.getFirstName());
+        securityUser.setLastname(user.getLastName());
         securityUser.setEmail(user.getEmail());
         securityUser.setUsername(user.getUsername());
         securityUser.setPassword(user.getPassword());
@@ -31,7 +31,6 @@ public class SecurityUserMapper {
         securityUser.setPasswordChangedDate(user.getPasswordChangedDate());
         securityUser.setUserRoles(userRoleToSecurityRole(user.getUserRoles()));
         securityUser.setAddress(user.getAddress());
-        securityUser.setAddressId(user.getAddressId());
         return securityUser;
     }
 

@@ -1,4 +1,4 @@
-package dev.aknb.osavdouz.core;
+package dev.aknb.osavdouz.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,4 +1,4 @@
-package dev.aknb.osavdouz.response;
+package dev.aknb.osavdouz.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;

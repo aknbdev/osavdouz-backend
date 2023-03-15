@@ -2,6 +2,7 @@ package dev.aknb.osavdouz.entities;
 
 import dev.aknb.osavdouz.entities.address.Address;
 import dev.aknb.osavdouz.entities.base.BaseEntity;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Table;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -22,15 +23,15 @@ import java.util.Set;
 public class User extends BaseEntity {
 
     @Column(name = "first_name", length = 50)
-    private String firstname;
+    private String firstName;
 
     @Column(name = "last_name", length = 50)
-    private String lastname;
+    private String lastName;
 
     @Column(name = "email")
     private String email;
 
-    @Column(name = "user_name")
+    @Column(name = "username")
     private String username;
 
     @Column(name = "password", length = 64)
@@ -50,7 +51,7 @@ public class User extends BaseEntity {
             name = "user_roles",
             joinColumns = {
                     @JoinColumn(name = "user_id", referencedColumnName = "id"),
-                    @JoinColumn(name = "user_name", referencedColumnName = "user_name")
+                    @JoinColumn(name = "username", referencedColumnName = "username")
             }, inverseJoinColumns = {
             @JoinColumn(name = "role_name", referencedColumnName = "name")})
     @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
@@ -59,7 +60,4 @@ public class User extends BaseEntity {
 
     @OneToOne(mappedBy = "user")
     private Address address;
-
-    @Column(name = "address_id")
-    private Long addressId;
 }

@@ -1,5 +1,8 @@
 package dev.aknb.osavdouz.config;
 
+import dev.aknb.osavdouz.filters.CustomAuthenticationFilter;
+import dev.aknb.osavdouz.services.MessageResolver;
+import dev.aknb.osavdouz.service.TokenService;
 import dev.aknb.osavdouz.service.UserDetailsServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,12 +32,21 @@ import java.util.List;
 @EnableMethodSecurity
 public class SecurityConfig {
 
+    private final UserDetailsServiceImpl userDetailsService;
+    private final MessageResolver messageResolver;
+    private final TokenService tokenService;
 
     private final String[] WHITE_URLS = new String[]{
             "/api/v1/auth/**",
             "/api/v1/country/**",
             "/api/v1/region/**"
     };
+
+    public SecurityConfig(UserDetailsServiceImpl userDetailsService, MessageResolver messageResolver, TokenService tokenService) {
+        this.userDetailsService = userDetailsService;
+        this.messageResolver = messageResolver;
+        this.tokenService = tokenService;
+    }
 
     @Bean
     public AuthenticationManager manager(UserDetailsServiceImpl userDetailsService) {
@@ -60,7 +72,7 @@ public class SecurityConfig {
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint())
                         .accessDeniedHandler(new BearerTokenAccessDeniedHandler()))
-//                .addFilter()
+                .addFilter(new CustomAuthenticationFilter(manager(userDetailsService), userDetailsService, messageResolver, tokenService))
                 .build();
     }
 

@@ -1,4 +1,4 @@
-package dev.aknb.osavdouz.resolver;
+package dev.aknb.osavdouz.services;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;

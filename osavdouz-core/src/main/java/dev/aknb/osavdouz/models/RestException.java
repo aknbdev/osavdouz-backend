@@ -1,4 +1,4 @@
-package dev.aknb.osavdouz.exceptions;
+package dev.aknb.osavdouz.models;
 
 import jakarta.annotation.Nullable;
 import lombok.EqualsAndHashCode;

@@ -1,8 +1,8 @@
-package dev.aknb.osavdouz.config;
+package dev.aknb.osavdouz.filters;
 
 import dev.aknb.osavdouz.models.SecurityUser;
-import dev.aknb.osavdouz.resolver.MessageResolver;
-import dev.aknb.osavdouz.response.Response;
+import dev.aknb.osavdouz.services.MessageResolver;
+import dev.aknb.osavdouz.models.Response;
 import dev.aknb.osavdouz.service.TokenService;
 import dev.aknb.osavdouz.service.UserDetailsServiceImpl;
 import dev.aknb.osavdouz.utils.ObjectUtils;
@@ -105,3 +105,12 @@ public class CustomAuthenticationFilter extends BasicAuthenticationFilter {
         return null;
     }
 }
+
+/*
+
+Apache-HttpClient/4.5.13 (Java/17.0.6)
+Apache-HttpClient/4.5.13 (Java/17.0.6)
+
+Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36
+Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36
+*/
