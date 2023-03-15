@@ -20,13 +20,13 @@ public class Region extends BaseEntity {
 
     @Column(name = "name", length = 100, nullable = false)
     private String name;
+    @Column(name = "country_id")
+    private Long countryId;
 
     @ManyToOne
     @JoinColumn(name = "country_id", referencedColumnName = "id", updatable = false, insertable = false, nullable = false)
     private Country country;
 
-    @Column(name = "country_id")
-    private Long countryId;
 
     @OneToMany(mappedBy = "region", cascade = CascadeType.ALL)
     private Set<City> cities;

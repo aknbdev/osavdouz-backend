@@ -62,10 +62,10 @@ public class RegionService {
     }
 
     public void deleteRegion(Long id) {
-        if (regionRepository.existsById(id)) {
-            regionRepository.deleteById(id);
-        }
+        if (!regionRepository.existsById(id)) {
 //            throw new null;
+        }
+        regionRepository.deleteById(id);
     }
 
 
@@ -78,6 +78,10 @@ public class RegionService {
         regionDto.setName(region.getName());
         regionDto.setCountryId(region.getCountryId());
         regionDto.setCities(region.getCities());
+    }
+
+    public Boolean existsById(Long id) {
+        return regionRepository.existsById(id);
     }
 
 
